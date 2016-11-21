@@ -3,7 +3,8 @@ import cors from 'cors';
 
 import fioPresenter from './fio-presenter';
 import PersonalComputer from './PersonalComputerModel';
-import { objectPathResolver } from './helpers';
+import { objectPathResolver, checkRgb, chechHsl } from './helpers';
+import colorcolor from 'colorcolor';
 
 const app = express();
 const model = new PersonalComputer;
@@ -47,6 +48,40 @@ app.get('/task2C', (req, res) => {
   }
 
   return res.send(`@${result}`);
+});
+
+// task2D
+app.get('/task2D', (req, res) => {
+  let result;
+
+  const hexRe = /^[#]?([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/;
+  const rgbaRe = /^rgba?/;
+  const hslRe = /^hsl/;
+  const matchRe = /([\da-f])([\da-f])([\da-f])/i;
+
+  try {
+    let rawColorHex = req.query.color.trim().toLowerCase()
+      .replace(/%23/g, '#')
+      .replace(/%20/g, '')
+      .replace(/\s/g, '');
+
+    if (hexRe.test(rawColorHex)) {
+      if (rawColorHex[0] === '#') rawColorHex = rawColorHex.substr(1);
+
+      result = colorcolor(`#${rawColorHex}`, 'hex');
+    } else if (rgbaRe.test(rawColorHex) && checkRgb(rawColorHex)) {
+      result = colorcolor(rawColorHex, 'hex');
+    } else if (hslRe.test(rawColorHex) && chechHsl(rawColorHex)) {
+      result = colorcolor(rawColorHex, 'hex');
+    } else {
+      throw new Error();
+    }
+
+    return res.send(result);
+  } catch (e) {
+    console.log(e);
+    return res.send('Invalid color');
+  }
 });
 
 // task3A (1)
