@@ -1,13 +1,17 @@
-import express from 'express';
-import cors from 'cors';
+import express from "express";
+import cors from "cors";
+import "./models";
+import {petsHandlers} from "./handlers";
+import fioPresenter from "./fio-presenter";
+import {objectPathResolver, checkRgb, chechHsl} from "./helpers";
+import colorcolor from "colorcolor";
 
-import fioPresenter from './fio-presenter';
-import PersonalComputer from './PersonalComputerModel';
-import { objectPathResolver, checkRgb, chechHsl } from './helpers';
-import colorcolor from 'colorcolor';
+// Loading models
 
 const app = express();
-const model = new PersonalComputer;
+const router = express.Router();
+// const model = new PersonalComputer;
+const model = 123;
 
 app.use(cors());
 
@@ -42,9 +46,13 @@ app.get('/task2C', (req, res) => {
   let result;
 
   switch (rawUsernameParts.length) {
-    case 2: rawUsernameParts[0] = rawUsernameParts[1]; // non-break
-    case 1: result = rawUsernameParts[0].match(re)[2]; break;
-    default: result = 'Invalid username';
+    case 2:
+      rawUsernameParts[0] = rawUsernameParts[1]; // non-break
+    case 1:
+      result = rawUsernameParts[0].match(re)[2];
+      break;
+    default:
+      result = 'Invalid username';
   }
 
   return res.send(`@${result}`);
@@ -57,7 +65,6 @@ app.get('/task2D', (req, res) => {
   const hexRe = /^[#]?([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/;
   const rgbaRe = /^rgba?/;
   const hslRe = /^hsl/;
-  const matchRe = /([\da-f])([\da-f])([\da-f])/i;
 
   try {
     let rawAnyColor = req.query.color.trim().toLowerCase()
@@ -114,5 +121,27 @@ app.get('/task3A/*?', (req, res) => {
 
   res.json(resultObject);
 });
+
+// task3B
+router.get('/pets/populate', petsHandlers.getPetsPopulate);
+router.get('/pets/:id/populate', petsHandlers.getPetsPopulateById);
+router.get('/users/populate', petsHandlers.getUsersPopulate);
+router.get('/users/:usernameOrId/populate', petsHandlers.getUsersPopulateByIdOrUsername);
+router.get('/', petsHandlers.getBase);
+router.get('/users', petsHandlers.getUsersWithCriterion);
+router.get('/users/:id(\\d+)', petsHandlers.getUserById);
+router.get('/users/:username', petsHandlers.getUserByUsername);
+router.get('/users/:id(\\d+)/pets', petsHandlers.getPetsByUserId);
+router.get('/users/:username/pets', petsHandlers.getPetsByUserUsername);
+router.get('/pets/:id(-?\\d+)', petsHandlers.getPetById);
+router.get('/pets', petsHandlers.getPetsWithCriterion);
+
+app.use('/task3B', router);
+
+app.use(function (err, req, res, next) {
+  console.log(err);
+  res.status(404).send('Not Found');
+});
+
 
 app.listen(3000);

@@ -3,8 +3,8 @@ function capitalize([first, ...rest]) {
 }
 
 /**
-* @param {string} fullname
-*/
+ * @param {string} fullname
+ */
 export default function fioPresenter(fullname) {
   let result,
     nameParts,
@@ -25,12 +25,15 @@ export default function fioPresenter(fullname) {
   switch (nameParts.length) {
     case 3:
       [firstname, middlename, lastname] = nameParts;
-      result = `${lastname} ${firstname[0]}. ${middlename[0]}.`; break;
+      result = `${lastname} ${firstname[0]}. ${middlename[0]}.`;
+      break;
     case 2:
       [firstname, lastname] = nameParts;
-      result = `${lastname} ${firstname[0]}.`; break;
+      result = `${lastname} ${firstname[0]}.`;
+      break;
     case 1:
-      result = capitalize(fullname); break;
+      result = capitalize(fullname);
+      break;
     default:
       result = 'Invalid fullname';
   }
