@@ -1,10 +1,8 @@
 import _ from "lodash";
-import {punkPetHairModel as model} from "../models";
+import { punkPetHairModel as model } from "../models";
 
 function findUsersByCriterions(criterions = {}) {
-  const users = _.filter(model().attributes.users, criterions);
-
-  return users.length ? users : null;
+  return _.filter(model().attributes.users, criterions);
 }
 
 function findPetsByCriterions(criterions = {}) {
@@ -23,9 +21,9 @@ function petCriterionsCast(criterions) {
   };
 
   Object.keys(criterions).forEach(key => {
-    let type = schema[key];
+    let type = schema[ key ];
 
-    criterions[key] = type(criterions[key]);
+    criterions[ key ] = type(criterions[ key ]);
   });
 
   return criterions;
@@ -71,7 +69,7 @@ export function getPetsWithCriterion(req, res) {
   let pets = [];
 
   req.query = petCriterionsCast(req.query);
-  const criterions = _.omitBy(req.query, (value, key) => ['age_gt', 'age_lt'].includes(key));
+  const criterions = _.omitBy(req.query, (value, key) => [ 'age_gt', 'age_lt' ].includes(key));
 
   if (_.isEmpty(criterions)) {
     pets = model().attributes.pets;
@@ -95,15 +93,15 @@ export function getPetById(req, res) {
 
   if (!pets.length) throw new Error;
 
-  return res.json(pets[0]);
+  return res.json(pets[ 0 ]);
 }
 
 export function getPetsByUserId(req, res) {
-  const user = findUsersByCriterions({ id: Number(req.params[0]) });
+  const user = findUsersByCriterions({ id: Number(req.params[ 0 ]) });
   if (!user) throw new Error;
 
   const petsOfUser = model().attributes.pets.filter(pet => pet.userId === user.id);
-  if (!petsOfUser[0]) throw new Error;
+  if (!petsOfUser[ 0 ]) throw new Error;
 
   return res.json(petsOfUser);
 }
@@ -120,7 +118,7 @@ export function getPetsPopulate(req, res) {
   const users = model().attributes.users;
 
   req.query = petCriterionsCast(req.query);
-  const criterions = _.omitBy(req.query, (value, key) => ['age_gt', 'age_lt'].includes(key));
+  const criterions = _.omitBy(req.query, (value, key) => [ 'age_gt', 'age_lt' ].includes(key));
 
   if (_.isEmpty(criterions)) {
     pets = model().attributes.pets;
@@ -149,11 +147,11 @@ export function getPetsPopulateById(req, res) {
   const pets = findPetsByCriterions({ id: Number(req.params.id) });
 
   if (!pets.length) throw new Error;
-  const pet = pets[0];
+  const pet = pets[ 0 ];
 
   pet.user = _.find(model().attributes.users, { id: pet.userId });
 
-  return res.json(pets[0]);
+  return res.json(pets[ 0 ]);
 }
 
 export function getUsersPopulate(req, res) {
@@ -189,7 +187,7 @@ export function getUsersPopulateByIdOrUsername(req, res) {
   }
 
   if (!user.length) throw new Error;
-  user = user[0];
+  user = user[ 0 ];
 
   user.pets = _.filter(pets, { userId: user.id });
 
