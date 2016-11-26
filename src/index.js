@@ -14,6 +14,7 @@ app.get('/task2A', handlers.task2a);
 app.get('/task2B', handlers.task2b);
 app.get('/task2C', handlers.task2c);
 app.get('/task2D', handlers.task2d);
+app.get('/task2X', handlers.task2x);
 
 app.get('/task3A/volumes', handlers.task3a.getVolumes);
 app.get('/task3A/*?', handlers.task3a.getMain);
@@ -34,6 +35,7 @@ router.get('/pets', handlers.task3b.getPetsWithCriterion);
 app.use('/task3B', router);
 
 app.use(function (err, req, res, next) {
+  console.log(err);
   res.status(404).send('Not Found');
 });
 
